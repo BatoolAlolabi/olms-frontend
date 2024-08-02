@@ -34,41 +34,51 @@ export const useLayout = () => {
 
 export const LayoutProvider = ({ children }: { children: ReactNode }) => {
   const [loadingPage, setLoadingPage] = useState(false);
-  const [user, setUser] = useState();
-
+  const [user, setUser] = useState("");
   useEffect(() => {
     const storedUser = localStorage.getItem("USER")
       ? localStorage.getItem("USER")
       : null;
     if (storedUser && !user) {
+      console.log(storedUser, "storedUser")
       const userData = JSON.parse(storedUser);
       setUser({ ...userData });
     }
   }, []);
   useEffect(() => {
-    // console.log(user, "user");
+    if(user !== ""){
+      console.log(user, "user")
     if (user) {
       localStorage.setItem("USER", JSON.stringify(user));
     } else {
       localStorage.removeItem("USER");
-    }
+    }}
   }, [user]);
+
   return (
     <LayoutContext.Provider
-      value={{ loadingPage, setLoadingPage, notify, user, setUser }}
+      value={{
+        loadingPage,
+        setLoadingPage,
+        notify,
+        user,
+        setUser,
+      }}
     >
       {children}
       <Toaster
         position="top-center"
         reverseOrder={false}
         gutter={8}
-        containerClassName=""
+        containerClassName="!z-[9999999999999999999999999]"
         containerStyle={{}}
         toastOptions={{
           className: "font-light text-[12px]",
           style: {
+            position: "relative",
             background: "#404040",
             color: "#fafafa",
+            zIndex: 9999, // Ensure this is high enough
           },
         }}
       />

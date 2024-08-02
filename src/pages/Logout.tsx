@@ -6,7 +6,8 @@ const Logout = () => {
 
   useEffect(() => {
     setUser(null);
-  }, [setUser]);
+    window.location.href = "/login"
+  }, []);
 
   return <>logout</>;
 };

@@ -1,3 +1,4 @@
 export const isAuthenticated = (user: any) => {
-  return !!user?.access_token;
+  console.log(!!user?.access_token, "isAuthenticated")
+  return user ? !!user?.access_token : true;
 };

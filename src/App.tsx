@@ -1,24 +1,38 @@
 import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
-import RedirectToHomeIfAuthenticated from "./utils/RedirectToHomeIfAuthenticated";
 
 import "./css/style.css";
+import "swiper/css";
+
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/autoplay";
+import "swiper/css/effect-fade";
 
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Logout from "pages/Logout";
 import NotFound from "pages/404";
 import Signup from "pages/Signup";
+import HomePage from "pages/HomePage";
+import Teachers from "pages/Teachers";
+import Categories from "pages/Categories";
+import Courses from "pages/Courses";
 export const router = [
   {
     path: "/",
-    element: <ProtectedRoute element={<Dashboard />} />,
+    element: <HomePage />,
     title: "Home",
   },
   {
+    path: "/dashboard",
+    element: <ProtectedRoute element={<Dashboard />} />,
+    title: "Dashboard",
+  },
+  {
     path: "/login",
-    element: <RedirectToHomeIfAuthenticated element={<Login />} />,
+    element: <Login />,
     title: "Login",
   },
   {
@@ -32,18 +46,18 @@ export const router = [
     title: "Logout",
   },
   {
-    path: "/users",
-    element: <ProtectedRoute />,
+    path: "/teachers",
+    element: <ProtectedRoute element={<Teachers />} />,
     title: "Users",
   },
   {
     path: "/courses",
-    element: <ProtectedRoute />,
+    element: <ProtectedRoute element={<Courses />} />,
     title: "Courses",
   },
   {
     path: "/categories",
-    element: <ProtectedRoute />,
+    element: <ProtectedRoute element={<Categories />} />,
     title: "Categories",
   },
   {
@@ -52,7 +66,7 @@ export const router = [
     title: "Finance",
   },
   {
-    path: "/trransactions",
+    path: "/transactions",
     element: <ProtectedRoute />,
     title: "Transactions",
   },
