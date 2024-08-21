@@ -7,6 +7,110 @@ import CourseCard from "components/CourseCard";
 import { useEffect, useState } from "react";
 import API from "utils/API";
 
+// const categories = [
+//   {
+//     id: 1,
+//     name: "Web Development",
+//     description: "Learn how to build modern web applications.",
+//     courses: [
+//       {
+//         id: 1,
+//         name: "HTML & CSS for Beginners",
+//         description:
+//           "A comprehensive guide to HTML and CSS for those starting their web development journey.",
+//         img: "/images/html.png",
+//         duration: "5 hours",
+//         tutor: "John Doe",
+//       },
+//       {
+//         id: 2,
+//         name: "JavaScript Essentials",
+//         description:
+//           "Master the basics of JavaScript, the most popular programming language for web development.",
+//         img: "/images/js.jpg",
+//         duration: "8 hours",
+//         tutor: "Jane Smith",
+//       },
+//       {
+//         id: 3,
+//         name: "React Basics",
+//         description: "Learn how to build dynamic user interfaces with React.",
+//         img: "/images/react.jpg",
+//         duration: "10 hours",
+//         tutor: "Alice Johnson",
+//       },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     name: "Data Science",
+//     description: "Analyzing data to extract insights and drive decisions.",
+//     courses: [
+//       {
+//         id: 1,
+//         name: "Python for Data Science",
+//         description:
+//           "An introduction to Python programming for data analysis and visualization.",
+//         img: "/images/paython.jpg",
+//         duration: "6 hours",
+//         tutor: "Michael Brown",
+//       },
+//       {
+//         id: 2,
+//         name: "Data Analysis with Pandas",
+//         description:
+//           "Learn how to use the Pandas library to perform data analysis in Python.",
+//         img: "/images/panda.png",
+//         duration: "7 hours",
+//         tutor: "Emily Davis",
+//       },
+//       {
+//         id: 3,
+//         name: "Machine Learning Fundamentals",
+//         description:
+//           "Get started with machine learning algorithms and techniques.",
+//         img: "/images/machine.jpg",
+//         duration: "9 hours",
+//         tutor: "Christopher Wilson",
+//       },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     name: "Digital Marketing",
+//     description:
+//       "Master the art of online marketing and social media strategies.",
+//     courses: [
+//       {
+//         id: 1,
+//         name: "SEO Basics",
+//         description:
+//           "Learn the fundamentals of Search Engine Optimization to improve website visibility.",
+//         img: "/images/seo.png",
+//         duration: "4 hours",
+//         tutor: "Olivia Martinez",
+//       },
+//       {
+//         id: 2,
+//         name: "Content Marketing",
+//         description:
+//           "Develop effective content marketing strategies to engage and grow your audience.",
+//         img: "/images/market.jpg",
+//         duration: "6 hours",
+//         tutor: "Liam Rodriguez",
+//       },
+//       {
+//         id: 3,
+//         name: "Social Media Marketing",
+//         description:
+//           "Harness the power of social media to promote your brand and connect with customers.",
+//         img: "/images/social.jpg",
+//         duration: "7 hours",
+//         tutor: "Sophia Garcia",
+//       },
+//     ],
+//   },
+// ];
 
 const HomePage = () => {
   const [categories, setCategories] = useState([]);
@@ -188,7 +292,7 @@ items-center min-h-screen"
             {categories.length > 0 &&
               categories?.map((cate: any, key) => {
                 return (
-                  <div className="px-32 w-full" key={key}>
+                  <div className="w-full" key={key}>
                     <h1 className="text-2xl font-bold text-center">
                       {cate?.name}
                     </h1>
@@ -202,13 +306,13 @@ items-center min-h-screen"
                       }}
                       wrapperClass="w-full"
                       loop={true}
-                      spaceBetween={30}
-                      slidesPerView={3}
+                      spaceBetween={50}
+                      slidesPerView={1}
                     >
                       {cate?.courses?.map((course: any, i: number) => {
                         return (
                           <SwiperSlide
-                            className="max-w-screen pb-10 mt-10 h-full max-h-screen"
+                            className="!w-full max-w-screen h-full max-h-screen"
                             key={i}
                           >
                             <CourseCard data={course} />

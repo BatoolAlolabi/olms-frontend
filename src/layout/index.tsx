@@ -11,6 +11,7 @@ interface LayoutContextProps {
   loadingPage: boolean;
   setLoadingPage: React.Dispatch<React.SetStateAction<boolean>>;
   user: any;
+  _removeUser: () => void;
   setUser: React.Dispatch<React.SetStateAction<any>>;
   notify: ({
     type,
@@ -34,27 +35,37 @@ export const useLayout = () => {
 
 export const LayoutProvider = ({ children }: { children: ReactNode }) => {
   const [loadingPage, setLoadingPage] = useState(false);
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
+  const [readLocaStorage, setReadLocaStorage] = useState(false);
   useEffect(() => {
-    const storedUser = localStorage.getItem("USER")
-      ? localStorage.getItem("USER")
-      : null;
-    if (storedUser && !user) {
-      console.log(storedUser, "storedUser")
-      const userData = JSON.parse(storedUser);
-      setUser({ ...userData });
+    const storedUser = localStorage.getItem("USER");
+    console.log(storedUser);
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        setReadLocaStorage(true);
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+        setReadLocaStorage(true);
+      }
     }
   }, []);
   useEffect(() => {
-    if(user !== ""){
-      console.log(user, "user")
     if (user) {
       localStorage.setItem("USER", JSON.stringify(user));
     } else {
       localStorage.removeItem("USER");
-    }}
+    }
   }, [user]);
 
+  const _removeUser = () => {
+    localStorage.removeItem("USER");
+    setUser(null);
+  };
+  if (!readLocaStorage) {
+    return <div>Loading...</div>;
+  }
   return (
     <LayoutContext.Provider
       value={{
@@ -63,6 +74,7 @@ export const LayoutProvider = ({ children }: { children: ReactNode }) => {
         notify,
         user,
         setUser,
+        _removeUser,
       }}
     >
       {children}

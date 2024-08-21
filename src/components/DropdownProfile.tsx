@@ -54,7 +54,7 @@ const DropdownProfile: React.FC<DropdownProfileProps> = ({
       >
         <img
           className="w-8 h-8 rounded-full"
-          src={`${import.meta.env.VITE_BASE_URL}${user?.personal_picture }`|| defaultUserImage}
+          src={user?.img || defaultUserImage}
           width="32"
           height="32"
           alt="User"

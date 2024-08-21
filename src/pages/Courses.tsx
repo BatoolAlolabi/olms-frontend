@@ -1,4 +1,3 @@
-import CourseCard from "components/CourseCard";
 import { LoadingSpinner } from "components/Svgs";
 import { useLayout } from "layout";
 import AuthLayout from "layout/AuthLayout";
@@ -40,7 +39,30 @@ const Courses = () => {
       <div className="grid grid-cols-3 gap-10">
         {courses?.map((course: any, i: number) => {
           return (
-            <CourseCard data={course} />
+            <div
+              key={i}
+              className="max-w-sm rounded justify-between overflow-hidden shadow-lg"
+            >
+              {course?.photo_path && (
+                <img
+                  className="w-full h-[350px]"
+                  src={`${import.meta.env.VITE_BASE_URL}${course?.photo_path}`}
+                  alt="Sunset in the mountains"
+                />
+              )}
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">{course?.name}</div>
+                <p className="text-gray-700 text-base">{course?.description}</p>
+              </div>
+              <div className="px-6 flex h-max items-end relative bottom-0  justify-between w-full  pt-4 pb-2">
+                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                  {course?.started_at}
+                </span>
+                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                  {course?.teacher?.name}
+                </span>
+              </div>
+            </div>
           );
         })}
       </div>
