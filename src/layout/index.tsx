@@ -7,10 +7,33 @@ import {
 } from "react";
 import { Toaster } from "react-hot-toast";
 import { notify } from "utils/notify";
+export interface User {
+  id?: number;
+  name?: string;
+  email?: string;
+  role_id?: number;
+  national_number?: string;
+  central_number?: string;
+  financial_id?: null;
+  surname?: null;
+  birth_date?: Date;
+  father_name?: string;
+  mother_name?: string;
+  personal_picture?: string;
+  deleted_at?: null;
+  role?: Role;
+  access_token?: string;
+  permissions?: string[];
+}
+
+export interface Role {
+  id?: number;
+  name?: string;
+}
 interface LayoutContextProps {
   loadingPage: boolean;
   setLoadingPage: React.Dispatch<React.SetStateAction<boolean>>;
-  user: any;
+  user: User;
   _removeUser: () => void;
   setUser: React.Dispatch<React.SetStateAction<any>>;
   notify: ({
@@ -63,9 +86,9 @@ export const LayoutProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("USER");
     setUser(null);
   };
-  if (!readLocaStorage) {
-    return <div>Loading...</div>;
-  }
+  // if (!readLocaStorage) {
+  //   return <div>Loading...</div>;
+  // }
   return (
     <LayoutContext.Provider
       value={{

@@ -1,17 +1,22 @@
 import { LoadingSpinner } from "components/Svgs";
-import CanCall from "utils/ability";
 
-export default function UsersTable({
+export default function FinancesTable({
   handleOpenEdit,
   handleDelete,
-  users,
+  finances,
 }: {
-  users: any;
+  finances: any;
   handleOpenEdit: (user: any) => void;
   handleDelete: (user: any) => void;
 }) {
-  console.log(users, " users");
-  const TABLE_HEAD = ["Member", "Email", "Birthdate", "ID", "Actions"];
+  const TABLE_HEAD = [
+    "ID",
+    "Member",
+    "Email",
+    "Balance",
+    "Total Deposits",
+    "Total Withdrawals",
+  ];
 
   return (
     <>
@@ -41,49 +46,41 @@ export default function UsersTable({
               ))}
             </tr>
           </thead>
-          {users.length > 0 ? (
+          {finances?.length > 0 ? (
             <tbody className="w-full">
-              {users.map((user: any, index: number) => (
+              {finances?.map((transaction: any, index: number) => (
                 <tr
                   key={index}
-                  className={`bg-white border-b !w-full dark:bg-gray-800 dark:border-gray-700 ${index % 2 === 0 ? "" : "bg-gray-50"
-                    }`}
+                  className={`bg-white border-b !w-full dark:bg-gray-800 dark:border-gray-700 ${
+                    index % 2 === 0 ? "" : "bg-gray-50"
+                  }`}
                 >
+                  <td className="px-6 py-4  text-start">
+                    {transaction?.user.national_number}
+                  </td>
                   <td className="px-6 py-4 font-medium  text-gray-900 whitespace-nowrap dark:text-white flex items-center space-x-2">
-                    {user.personal_picture && (
+                    {transaction?.user?.personal_picture && (
                       <img
-                        src={`${import.meta.env.VITE_BASE_URL}${user.personal_picture
-                          }`}
-                        alt={user.name}
+                        src={`${import.meta.env.VITE_BASE_URL}${
+                          transaction?.user?.personal_picture
+                        }`}
+                        alt={transaction.user?.name}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                     )}
-                    <span>{user.name}</span>
+                    <span>{transaction.user?.name}</span>
                   </td>
-                  <td className="px-6 py-4 text-start">{user.email}</td>
-                  <td className="px-6 py-4 text-start">{user.birth_date}</td>
-                  <td className="px-6 py-4  text-start">
-                    {user.national_number}
+                  <td className="px-6 py-4 text-start">
+                    {transaction.user?.email}
                   </td>
-                  <td className="text-left flex items-center justify-center gap-2 px-6 py-4 ">
-                    <CanCall permission="UPDATE_TEACHER">
-                      <a
-                        onClick={() => handleOpenEdit(user)}
-                        href="#"
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                      >
-                        Edit
-                      </a>
-                    </CanCall>
-                    <CanCall permission="DELETE_TEACHER">
-                      <a
-                        onClick={() => handleDelete(user)}
-                        href="#"
-                        className="font-medium text-red-600 dark:text-red-500 hover:underline"
-                      >
-                        Delete
-                      </a>
-                    </CanCall>
+                  <td className="px-6 py-4 text-start">
+                    {transaction.total_balance}
+                  </td>
+                  <td className="px-6 py-4 text-start">
+                    {transaction.deposit_Total}
+                  </td>
+                  <td className="px-6 py-4 text-start">
+                    {transaction.withdrawal_Total}
                   </td>
                 </tr>
               ))}

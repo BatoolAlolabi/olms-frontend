@@ -1,17 +1,17 @@
 import { LoadingSpinner } from "components/Svgs";
 import CanCall from "utils/ability";
 
-export default function UsersTable({
+export default function RegistrationTable({
   handleOpenEdit,
   handleDelete,
-  users,
+  registration,
 }: {
-  users: any;
-  handleOpenEdit: (user: any) => void;
-  handleDelete: (user: any) => void;
+  registration: any;
+  handleOpenEdit: (register: any) => void;
+  handleDelete: (register: any) => void;
 }) {
-  console.log(users, " users");
-  const TABLE_HEAD = ["Member", "Email", "Birthdate", "ID", "Actions"];
+  console.log(registration, " registration");
+  const TABLE_HEAD = ["ID", "courses", "Started At", "Ended At", "Actions"];
 
   return (
     <>
@@ -20,7 +20,7 @@ export default function UsersTable({
           <thead className="text-xs text-gray-700 w-fulluppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr className=" ">
               {TABLE_HEAD.map((head, index) => (
-                <th key={index} scope="col" className="text-center px-6 py-3">
+                <th key={index} scope="col" className="text-center px-2 py-3">
                   <div className="flex text-center justify-start items-center">
                     {head}
                     {index > 0 && (
@@ -41,43 +41,42 @@ export default function UsersTable({
               ))}
             </tr>
           </thead>
-          {users.length > 0 ? (
+          {registration.length > 0 ? (
             <tbody className="w-full">
-              {users.map((user: any, index: number) => (
+              {registration.map((register: any, index: number) => (
                 <tr
                   key={index}
                   className={`bg-white border-b !w-full dark:bg-gray-800 dark:border-gray-700 ${index % 2 === 0 ? "" : "bg-gray-50"
                     }`}
                 >
-                  <td className="px-6 py-4 font-medium  text-gray-900 whitespace-nowrap dark:text-white flex items-center space-x-2">
-                    {user.personal_picture && (
-                      <img
-                        src={`${import.meta.env.VITE_BASE_URL}${user.personal_picture
-                          }`}
-                        alt={user.name}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                    )}
-                    <span>{user.name}</span>
+                  <td className="px-2 py-2 text-start">{register?.id}</td>
+
+                  <td className="min-w-[100px] px-2 py-2 text-start">
+                    {register?.courses
+                      ?.map((course: any) => course.name)
+                      .join(", ")}
                   </td>
-                  <td className="px-6 py-4 text-start">{user.email}</td>
-                  <td className="px-6 py-4 text-start">{user.birth_date}</td>
-                  <td className="px-6 py-4  text-start">
-                    {user.national_number}
+
+                  <td className="min-w-[100px] px-2 py-2  text-start">
+                    {register?.end_at}
                   </td>
-                  <td className="text-left flex items-center justify-center gap-2 px-6 py-4 ">
-                    <CanCall permission="UPDATE_TEACHER">
+
+                  <td className="min-w-[100px] px-2 py-2  text-start">
+                    {register?.started_at}
+                  </td>
+                  <td className="text-left flex items-center justify-center gap-2 px-2 py-2 ">
+                    <CanCall permission="UPDATE_REGISTERATION">
                       <a
-                        onClick={() => handleOpenEdit(user)}
+                        onClick={() => handleOpenEdit(register)}
                         href="#"
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                       >
                         Edit
                       </a>
                     </CanCall>
-                    <CanCall permission="DELETE_TEACHER">
+                    <CanCall permission="DELETE_REGISTERATION">
                       <a
-                        onClick={() => handleDelete(user)}
+                        onClick={() => handleDelete(register)}
                         href="#"
                         className="font-medium text-red-600 dark:text-red-500 hover:underline"
                       >

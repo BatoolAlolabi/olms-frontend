@@ -1,13 +1,15 @@
-import UsersTable from "components/Users/Students/Table";
 import { useLayout } from "layout";
 import AuthLayout from "layout/AuthLayout";
 import { useEffect, useState } from "react";
 import { Button } from "@material-tailwind/react";
 import API from "utils/API";
-import UserModal from "components/Users/Students/Modal";
-import DeleteDialog from "components/Users/Students/DeleteDialog";
-import CanCall from "utils/ability";
-const Students = () => {
+import LessonsModal from "components/Courses/Lessons/Modal";
+import LessonsTable from "components/Courses/Lessons/Table";
+import { useParams } from "react-router-dom";
+
+const Lessons = () => {
+  const { id } = useParams();
+  console.log(id);
   const [open, setOpen] = useState<any>();
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [modalData, setModalData] = useState(null);
@@ -23,11 +25,12 @@ const Students = () => {
   };
   const handleCloseDelete = () => {
     setOpenDelete(false);
-    setModalData(null);
+    handleClose();
   };
   const handleOpen = () => {
     if (open === "add" || open === "edit") {
       setOpen(false);
+      handleClose();
     } else {
       handleOpenAdd();
     }
@@ -36,62 +39,55 @@ const Students = () => {
     setModalData(user);
     setOpenDelete(!openDelete);
   };
-  const [users, setUsers] = useState([]);
+  const [lessons, setLessons] = useState([]);
   const { user, notify } = useLayout();
 
-  const _fetchData = () => {
+  const _fetchData = (id: any) => {
     API.get(
-      "/api/students",
+      `api/lessons/lessons_of_course/${id}`,
       {},
       (data) => {
-        setUsers(data?.data);
+        setLessons(data?.data);
       },
-      (e) => { },
+      (e) => {},
       {
         Authorization: `Bearer ${user?.access_token}`,
       }
     );
   };
   useEffect(() => {
-    _fetchData();
-  }, []);
+    if (id) {
+      _fetchData(id);
+    }
+  }, [id]);
   useEffect(() => {
-    console.log(open, "open");
+    // console.log(open, "open");
   }, [open]);
 
   return (
-    <AuthLayout title={"Students"}>
-      <CanCall permission="CREATE_STUDENT">
-        <div className="w-full flex justify-end m-4 items-end">
-          <Button
-            variant="text"
-            className="border bg-[#fafafa] shadow-lg"
-            onClick={handleOpenAdd}
-          >
-            Add New Student
-          </Button>
-        </div>
-      </CanCall>
-      <UserModal
+    <AuthLayout title={"Lessons"}>
+      <div className="w-full flex justify-end m-4 items-end">
+        <Button
+          variant="text"
+          className="border bg-[#fafafa] shadow-lg"
+          onClick={handleOpenAdd}
+        >
+          New Lesson
+        </Button>
+      </div>
+      <LessonsModal
         handleClose={handleClose}
         handleOpen={handleOpen}
         open={open === "add" || open === "edit"}
         modalData={modalData}
         _refresh={_fetchData}
       />
-      <DeleteDialog
-        handleClose={handleCloseDelete}
-        handleOpen={() => setOpenDelete(false)}
-        open={openDelete}
-        modalData={modalData}
-        _refresh={_fetchData}
-      />
-      <UsersTable
+      <LessonsTable
         handleDelete={handleOpenDelete}
         handleOpenEdit={handleOpenEdit}
-        users={users}
+        lessons={lessons}
       />
     </AuthLayout>
   );
 };
-export default Students;
+export default Lessons;

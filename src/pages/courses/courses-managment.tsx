@@ -1,21 +1,44 @@
-import UsersTable from "components/Users/Students/Table";
 import { useLayout } from "layout";
 import AuthLayout from "layout/AuthLayout";
 import { useEffect, useState } from "react";
 import { Button } from "@material-tailwind/react";
 import API from "utils/API";
-import UserModal from "components/Users/Students/Modal";
-import DeleteDialog from "components/Users/Students/DeleteDialog";
+import CoursesModal from "components/Courses/Modal";
+import DeleteDialog from "components/Courses/DeleteDialog";
+import CoursesTable from "components/Courses/Table";
+import LessonsOfCourse from "components/Courses/LessonsModal";
 import CanCall from "utils/ability";
-const Students = () => {
-  const [open, setOpen] = useState<any>();
+const CoursesManagment = () => {
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [modalData, setModalData] = useState(null);
+  const [lessonsOfCourse, setLessonsOfCourse] = useState([]);
+  const [openLessons, setOpenLessons] = useState<boolean>(false);
+  const [open, setOpen] = useState<any>();
 
   const handleOpenAdd = () => setOpen("add");
-  const handleOpenEdit = (user: any) => {
-    setModalData(user);
+  const handleOpenEdit = (course: any) => {
+    setModalData(course);
     setOpen("edit");
+  };
+  const handleOpenLessons = (course: any) => {
+    if (course?.id) {
+      API.get(
+        `api/lessons/lessons_of_course/${course?.id}`,
+        {},
+        (data) => {
+          setLessonsOfCourse(data?.data);
+          setOpenLessons(true);
+        },
+        (e) => { },
+        {
+          Authorization: `Bearer ${user?.access_token}`,
+        }
+      );
+    }
+  };
+  const handleCloseLessons = () => {
+    setOpenLessons(false);
+    setLessonsOfCourse([]);
   };
   const handleClose = () => {
     setOpen("");
@@ -23,11 +46,12 @@ const Students = () => {
   };
   const handleCloseDelete = () => {
     setOpenDelete(false);
-    setModalData(null);
+    handleClose();
   };
   const handleOpen = () => {
     if (open === "add" || open === "edit") {
       setOpen(false);
+      handleClose();
     } else {
       handleOpenAdd();
     }
@@ -36,12 +60,12 @@ const Students = () => {
     setModalData(user);
     setOpenDelete(!openDelete);
   };
-  const [users, setUsers] = useState([]);
+  const [courses, setUsers] = useState([]);
   const { user, notify } = useLayout();
 
   const _fetchData = () => {
     API.get(
-      "/api/students",
+      "/api/courses",
       {},
       (data) => {
         setUsers(data?.data);
@@ -56,27 +80,34 @@ const Students = () => {
     _fetchData();
   }, []);
   useEffect(() => {
-    console.log(open, "open");
+    // console.log(open, "open");
   }, [open]);
 
   return (
-    <AuthLayout title={"Students"}>
-      <CanCall permission="CREATE_STUDENT">
+    <AuthLayout title={"Courses Managment"}>
+      <CanCall permission="CREATE_COURSE">
         <div className="w-full flex justify-end m-4 items-end">
           <Button
             variant="text"
             className="border bg-[#fafafa] shadow-lg"
             onClick={handleOpenAdd}
           >
-            Add New Student
+            Add New Course
           </Button>
         </div>
       </CanCall>
-      <UserModal
+      <CoursesModal
         handleClose={handleClose}
         handleOpen={handleOpen}
         open={open === "add" || open === "edit"}
         modalData={modalData}
+        _refresh={_fetchData}
+      />
+      <LessonsOfCourse
+        handleClose={handleCloseLessons}
+        handleOpen={handleOpenLessons}
+        open={openLessons}
+        modalData={lessonsOfCourse}
         _refresh={_fetchData}
       />
       <DeleteDialog
@@ -86,12 +117,13 @@ const Students = () => {
         modalData={modalData}
         _refresh={_fetchData}
       />
-      <UsersTable
+      <CoursesTable
         handleDelete={handleOpenDelete}
         handleOpenEdit={handleOpenEdit}
-        users={users}
+        handleOpenLessons={handleOpenLessons}
+        courses={courses}
       />
     </AuthLayout>
   );
 };
-export default Students;
+export default CoursesManagment;

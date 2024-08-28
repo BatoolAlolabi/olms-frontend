@@ -1,13 +1,12 @@
-import UsersTable from "components/Users/Students/Table";
 import { useLayout } from "layout";
 import AuthLayout from "layout/AuthLayout";
 import { useEffect, useState } from "react";
 import { Button } from "@material-tailwind/react";
 import API from "utils/API";
-import UserModal from "components/Users/Students/Modal";
-import DeleteDialog from "components/Users/Students/DeleteDialog";
-import CanCall from "utils/ability";
-const Students = () => {
+import FinancesModal from "components/Financial/Finance/Modal";
+import FinancesTable from "components/Financial/Finance/Table";
+
+const Finance = () => {
   const [open, setOpen] = useState<any>();
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [modalData, setModalData] = useState(null);
@@ -23,11 +22,12 @@ const Students = () => {
   };
   const handleCloseDelete = () => {
     setOpenDelete(false);
-    setModalData(null);
+    handleClose();
   };
   const handleOpen = () => {
     if (open === "add" || open === "edit") {
       setOpen(false);
+      handleClose();
     } else {
       handleOpenAdd();
     }
@@ -36,17 +36,17 @@ const Students = () => {
     setModalData(user);
     setOpenDelete(!openDelete);
   };
-  const [users, setUsers] = useState([]);
+  const [finances, setFinances] = useState([]);
   const { user, notify } = useLayout();
 
   const _fetchData = () => {
     API.get(
-      "/api/students",
+      "/api/financials",
       {},
       (data) => {
-        setUsers(data?.data);
+        setFinances(data?.data);
       },
-      (e) => { },
+      (e) => {},
       {
         Authorization: `Bearer ${user?.access_token}`,
       }
@@ -56,42 +56,33 @@ const Students = () => {
     _fetchData();
   }, []);
   useEffect(() => {
-    console.log(open, "open");
+    // console.log(open, "open");
   }, [open]);
 
   return (
-    <AuthLayout title={"Students"}>
-      <CanCall permission="CREATE_STUDENT">
-        <div className="w-full flex justify-end m-4 items-end">
-          <Button
-            variant="text"
-            className="border bg-[#fafafa] shadow-lg"
-            onClick={handleOpenAdd}
-          >
-            Add New Student
-          </Button>
-        </div>
-      </CanCall>
-      <UserModal
+    <AuthLayout title={"Finance"}>
+      <div className="w-full flex justify-end m-4 items-end">
+        <Button
+          variant="text"
+          className="border bg-[#fafafa] shadow-lg"
+          onClick={handleOpenAdd}
+        >
+          New Deposit
+        </Button>
+      </div>
+      <FinancesModal
         handleClose={handleClose}
         handleOpen={handleOpen}
         open={open === "add" || open === "edit"}
         modalData={modalData}
         _refresh={_fetchData}
       />
-      <DeleteDialog
-        handleClose={handleCloseDelete}
-        handleOpen={() => setOpenDelete(false)}
-        open={openDelete}
-        modalData={modalData}
-        _refresh={_fetchData}
-      />
-      <UsersTable
+      <FinancesTable
         handleDelete={handleOpenDelete}
         handleOpenEdit={handleOpenEdit}
-        users={users}
+        finances={finances}
       />
     </AuthLayout>
   );
 };
-export default Students;
+export default Finance;

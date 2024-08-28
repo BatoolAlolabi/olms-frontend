@@ -1,13 +1,13 @@
-import UsersTable from "components/Users/Students/Table";
 import { useLayout } from "layout";
 import AuthLayout from "layout/AuthLayout";
 import { useEffect, useState } from "react";
 import { Button } from "@material-tailwind/react";
 import API from "utils/API";
-import UserModal from "components/Users/Students/Modal";
-import DeleteDialog from "components/Users/Students/DeleteDialog";
+import RegistrationModal from "components/Courses/Registration/Modal";
+import DeleteDialog from "components/Courses/Registration/DeleteDialog";
+import RegistrationTable from "components/Courses/Registration/Table";
 import CanCall from "utils/ability";
-const Students = () => {
+const RegistrationManagment = () => {
   const [open, setOpen] = useState<any>();
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [modalData, setModalData] = useState(null);
@@ -23,11 +23,12 @@ const Students = () => {
   };
   const handleCloseDelete = () => {
     setOpenDelete(false);
-    setModalData(null);
+    handleClose();
   };
   const handleOpen = () => {
     if (open === "add" || open === "edit") {
       setOpen(false);
+      handleClose();
     } else {
       handleOpenAdd();
     }
@@ -36,12 +37,12 @@ const Students = () => {
     setModalData(user);
     setOpenDelete(!openDelete);
   };
-  const [users, setUsers] = useState([]);
+  const [registration, setUsers] = useState([]);
   const { user, notify } = useLayout();
 
   const _fetchData = () => {
     API.get(
-      "/api/students",
+      "/api/registerations",
       {},
       (data) => {
         setUsers(data?.data);
@@ -56,23 +57,23 @@ const Students = () => {
     _fetchData();
   }, []);
   useEffect(() => {
-    console.log(open, "open");
+    // console.log(open, "open");
   }, [open]);
 
   return (
-    <AuthLayout title={"Students"}>
-      <CanCall permission="CREATE_STUDENT">
+    <AuthLayout title={"Registration Managment"}>
+      <CanCall permission="CREATE_REGISTERATION">
         <div className="w-full flex justify-end m-4 items-end">
           <Button
             variant="text"
             className="border bg-[#fafafa] shadow-lg"
             onClick={handleOpenAdd}
           >
-            Add New Student
+            Add New Registration
           </Button>
         </div>
       </CanCall>
-      <UserModal
+      <RegistrationModal
         handleClose={handleClose}
         handleOpen={handleOpen}
         open={open === "add" || open === "edit"}
@@ -86,12 +87,12 @@ const Students = () => {
         modalData={modalData}
         _refresh={_fetchData}
       />
-      <UsersTable
+      <RegistrationTable
         handleDelete={handleOpenDelete}
         handleOpenEdit={handleOpenEdit}
-        users={users}
+        registration={registration}
       />
     </AuthLayout>
   );
 };
-export default Students;
+export default RegistrationManagment;

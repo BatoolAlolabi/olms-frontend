@@ -10,17 +10,23 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
 
-import Dashboard from "./pages/dashboard";
-import Login from "./pages/login";
-import Logout from "pages/logout";
+import Dashboard from "pages/Dashboard";
+import Login from "pages/Login";
+import Logout from "pages/Logout";
 import NotFound from "pages/404";
-import Signup from "pages/signup";
+import Signup from "pages/Signup";
 import HomePage from "pages/home-page";
-import Teachers from "pages/teachers";
-import Categories from "pages/categories";
-import Courses from "pages/courses";
+import Teachers from "pages/Teachers";
+import Categories from "pages/Categories";
+import Courses from "pages/courses/courses";
 import Students from "pages/students";
 import Employees from "pages/employees";
+import Finance from "pages/financial/finance";
+import Transactions from "pages/financial/transactions";
+import Profile from "pages/profile/personal-informations";
+import CoursesManagment from "pages/courses/courses-managment";
+import RegistrationManagment from "pages/courses/registration";
+import Lessons from "pages/lessons/index.tsx";
 export const router = [
   {
     path: "/",
@@ -68,9 +74,24 @@ export const router = [
     title: "Courses",
   },
   {
+    path: "/courses-managment",
+    element: <ProtectedRoute element={<CoursesManagment />} />,
+    title: "Courses Managment",
+  },
+  {
+    path: "/registration",
+    element: <ProtectedRoute element={<RegistrationManagment />} />,
+    title: "Registrations",
+  },
+  {
     path: "/courses/:lesson",
     element: <ProtectedRoute element={<Courses />} />,
     title: "Courses",
+  },
+  {
+    path: "/lessons/:id",
+    element: <ProtectedRoute element={<Lessons />} />,
+    title: "Lessons",
   },
   {
     path: "/categories/:course",
@@ -88,18 +109,18 @@ export const router = [
     title: "Categories",
   },
   {
-    path: "/finance",
-    element: <ProtectedRoute />,
+    path: "/financials/finance",
+    element: <ProtectedRoute element={<Finance />} />,
     title: "Finance",
   },
   {
-    path: "/trransactions",
-    element: <ProtectedRoute />,
+    path: "/financials/transactions",
+    element: <ProtectedRoute element={<Transactions />} />,
     title: "Transactions",
   },
   {
-    path: "/personal-informations",
-    element: <ProtectedRoute />,
+    path: "/profile/personal-informations",
+    element: <ProtectedRoute element={<Profile />} />,
     title: "Personal Informations",
   },
   {
