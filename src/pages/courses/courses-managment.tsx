@@ -9,7 +9,6 @@ import CoursesTable from "components/Courses/Table";
 import LessonsOfCourse from "components/Courses/LessonsModal";
 import CanCall from "utils/ability";
 const CoursesManagment = () => {
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [modalData, setModalData] = useState(null);
   const [lessonsOfCourse, setLessonsOfCourse] = useState([]);
   const [openLessons, setOpenLessons] = useState<boolean>(false);
@@ -44,9 +43,14 @@ const CoursesManagment = () => {
     setOpen("");
     setModalData(null);
   };
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const handleCloseDelete = () => {
     setOpenDelete(false);
     handleClose();
+  };
+  const handleOpenDelete = (user: any) => {
+    setModalData(user);
+    setOpenDelete(!openDelete);
   };
   const handleOpen = () => {
     if (open === "add" || open === "edit") {
@@ -56,12 +60,8 @@ const CoursesManagment = () => {
       handleOpenAdd();
     }
   };
-  const handleOpenDelete = (user: any) => {
-    setModalData(user);
-    setOpenDelete(!openDelete);
-  };
   const [courses, setUsers] = useState([]);
-  const { user, notify } = useLayout();
+  const { user, translate } = useLayout();
 
   const _fetchData = () => {
     API.get(
@@ -84,15 +84,15 @@ const CoursesManagment = () => {
   }, [open]);
 
   return (
-    <AuthLayout title={"Courses Managment"}>
+    <AuthLayout title={translate("courses_management")}>
       <CanCall permission="CREATE_COURSE">
-        <div className="w-full flex justify-end m-4 items-end">
+        <div className="w-full flex justify-end mt-[10px] mb-[10px] items-end">
           <Button
             variant="text"
             className="border bg-[#fafafa] shadow-lg"
             onClick={handleOpenAdd}
           >
-            Add New Course
+            {translate("add_new_course")}
           </Button>
         </div>
       </CanCall>

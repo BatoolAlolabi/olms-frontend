@@ -1,5 +1,6 @@
-import { Button, Dialog, DialogBody } from "@material-tailwind/react";
-import { useLayout } from "layout";
+import { Dialog, DialogBody } from "@material-tailwind/react";
+import { useState } from "react";
+import CanCall from "utils/ability";
 
 interface CourseModalProps {
   data: any;
@@ -7,6 +8,17 @@ interface CourseModalProps {
   _refresh: () => void;
   open: boolean;
   handleOpen: () => void;
+  handleRegister: ({
+    section_id,
+    is_subscribed,
+    is_available,
+    course_id,
+  }: {
+    section_id: number;
+    is_subscribed: boolean;
+    is_available: boolean;
+    course_id: number;
+  }) => void;
 }
 const CourseDetailsModal = ({
   data,
@@ -14,11 +26,20 @@ const CourseDetailsModal = ({
   handleClose,
   open,
   handleOpen,
+  handleRegister,
 }: CourseModalProps) => {
-  const { user, notify } = useLayout();
+  const [selectedSection, setSelectedSection] = useState(null);
 
   return (
-    <Dialog className="z-[999]" open={open} handler={handleOpen}>
+    <Dialog
+      className="z-[999]"
+      open={open}
+      handler={handleOpen}
+      style={{
+        maxWidth: "90%",
+        minWidth: "60%",
+      }}
+    >
       <DialogBody>
         <div className="antialiased text-gray-900 ">
           <div className="flex items-center justify-center">
@@ -60,19 +81,72 @@ const CourseDetailsModal = ({
                     </span>
                   </span>
                 </div>
+                <div className="mt-[10px] mb-[10px]">
+                  <div className="text-[#e88585]">Sections:</div>
+                  <div className="flex flex-row justify-between m-[5px]">
+                    {data?.sections?.map((one: any) => (
+                      <div
+                        className={`w-full text-center items-center 
+                    shadow-sm p-[5px] m-[5px] border-[1px] 
+                    rounded-[10px] cursor-pointer ${
+                      one.id === selectedSection ? "bg-[#cde4e9]" : ""
+                    }`}
+                        onClick={() => {
+                          setSelectedSection(one.id);
+                        }}
+                      >
+                        <div className="text-[#8097ca] text-start">
+                          {one.name}
+                        </div>
+                        <div className="text-[#7ae188] w-full text-start">
+                          Lessons:
+                        </div>
+                        <div>
+                          {one?.sessions?.map((session: any, index: number) => (
+                            <div className="text-start ml-[10px]" key={index}>
+                              - {session?.lesson?.name} / {session?.date}{" "}
+                              {session?.time}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>{" "}
-        <div className="flex justify-between mt-6">
-          <Button
-            variant="text"
-            color="red"
+        <div className="flex justify-between mt-6 w-3">
+          <CanCall permission="REGISTER_COURSE">
+            <button
+              onClick={() => {
+                handleRegister({
+                  is_subscribed: !!data?.is_subscribed,
+                  is_available: !!data?.is_available,
+                  section_id: parseInt(selectedSection ?? "0"),
+                  course_id: parseInt(data?.id),
+                });
+              }}
+              className="border-[1px] text-[#757ecb] border-[#757ecb] 
+            mr-[20px]
+            rounded-[10px] p-[5px] border-solid cursor-pointer 
+            disabled:cursor-not-allowed disabled:text-[#6f6f6f] disabled:border-[#6f6f6f]
+            "
+              disabled={!selectedSection}
+            >
+              Register
+            </button>
+          </CanCall>
+          <button
             onClick={handleClose}
-            className="mr-1"
+            className="border-[1px] text-[#d56969] border-[#d56969] 
+            rounded-[10px] p-[5px] border-solid cursor-pointer 
+            disabled:cursor-not-allowed disabled:text-[#6f6f6f] disabled:border-[#6f6f6f]
+            "
           >
-            <span>Cancel</span>
-          </Button>
+            Cancel
+          </button>
         </div>
       </DialogBody>
     </Dialog>

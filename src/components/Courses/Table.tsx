@@ -1,4 +1,5 @@
 import { LoadingSpinner } from "components/Svgs";
+import { useLayout } from "layout";
 import { NavLink } from "react-router-dom";
 import CanCall from "utils/ability";
 
@@ -13,17 +14,18 @@ export default function CoursesTable({
   handleOpenLessons: (course: any) => void;
   handleDelete: (course: any) => void;
 }) {
-  console.log(courses, " courses");
+  const { translate } = useLayout();
   const TABLE_HEAD = [
-    "ID",
-    "Name",
-    "Category",
-    "Description",
-    "Price",
-    "Teacher",
-    "Started At",
-    "Lessons",
-    "Actions",
+    translate("id"),
+    translate("name"),
+    translate("category"),
+    translate("description"),
+    translate("price"),
+    translate("teacher"),
+    translate("started_at"),
+    translate("lessons"),
+    translate("projects"),
+    translate("actions"),
   ];
 
   return (
@@ -94,20 +96,31 @@ export default function CoursesTable({
                   <td className="min-w-[100px] px-2 py-2  text-start">
                     <NavLink
                       // onClick={() => handleOpenLessons(course)}
-                      to={`/lessons/${course?.id}`}
+                      to={`/lessons?id=${course?.id}`}
                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                     >
                       Show Lessons
                     </NavLink>
                   </td>
-                  <td className="text-left flex items-center justify-center gap-2 px-2 py-2 ">
+                  <td className="min-w-[100px] px-2 py-2  text-start">
+                    <CanCall permission="SHOW_PROJECTS">
+                      <NavLink
+                        // onClick={() => handleOpenLessons(course)}
+                        to={`/project/${course?.id}`}
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Show Project
+                      </NavLink>
+                    </CanCall>
+                  </td>
+                  <td className="min-w-[100px] px-2 py-2 gap-x-2">
                     <CanCall permission="UPDATE_COURSE">
                       <a
                         onClick={() => handleOpenEdit(course)}
                         href="#"
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        className="pr-2 font-medium text-blue-600 dark:text-blue-500 hover:underline"
                       >
-                        Edit
+                        {translate("edit")}
                       </a>
                     </CanCall>
                     <CanCall permission="DELETE_COURSE">
@@ -116,7 +129,7 @@ export default function CoursesTable({
                         href="#"
                         className="font-medium text-red-600 dark:text-red-500 hover:underline"
                       >
-                        Delete
+                        {translate("delete")}
                       </a>
                     </CanCall>
                   </td>

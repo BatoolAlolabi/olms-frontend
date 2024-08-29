@@ -564,8 +564,8 @@ const CoursesModal = ({
                       </div>
                       <label>Duration</label>
                       <input
-                        type="number"
-                        value={day.duration}
+                        type="text"
+                        value={day.duration !== 0 ? day.duration : "" }
                         onChange={(e) =>
                           handleDayDetailsChange(
                             index,

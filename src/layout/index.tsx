@@ -7,6 +7,8 @@ import {
 } from "react";
 import { Toaster } from "react-hot-toast";
 import { notify } from "utils/notify";
+import enTranslations from "translations/en.json";
+import arTranslations from "translations/ar.json";
 export interface User {
   id?: number;
   name?: string;
@@ -24,16 +26,18 @@ export interface User {
   role?: Role;
   access_token?: string;
   permissions?: string[];
+  img?: string;
 }
 
 export interface Role {
   id?: number;
   name?: string;
 }
+
 interface LayoutContextProps {
   loadingPage: boolean;
   setLoadingPage: React.Dispatch<React.SetStateAction<boolean>>;
-  user: User;
+  user: User | null;
   _removeUser: () => void;
   setUser: React.Dispatch<React.SetStateAction<any>>;
   notify: ({
@@ -45,7 +49,11 @@ interface LayoutContextProps {
     message: string;
     timeout?: number;
   }) => void;
+  translate: (key: string) => string;
+  setLanguage: (language: string) => void;
+  language: string;
 }
+
 const LayoutContext = createContext<LayoutContextProps | undefined>(undefined);
 
 export const useLayout = () => {
@@ -58,8 +66,19 @@ export const useLayout = () => {
 
 export const LayoutProvider = ({ children }: { children: ReactNode }) => {
   const [loadingPage, setLoadingPage] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [readLocaStorage, setReadLocaStorage] = useState(false);
+  const [language, setLanguage] = useState<string>(
+    localStorage.getItem("lang") || "en"
+  );
+  const translations: any = {
+    en: enTranslations,
+    ar: arTranslations,
+  };
+  const translate = (key: string): string => {
+    console.log(key, translations[language], translations[language][key]);
+    return translations[language][key] || key;
+  };
   useEffect(() => {
     const storedUser = localStorage.getItem("USER");
     console.log(storedUser);
@@ -98,6 +117,9 @@ export const LayoutProvider = ({ children }: { children: ReactNode }) => {
         user,
         setUser,
         _removeUser,
+        translate,
+        language,
+        setLanguage,
       }}
     >
       {children}

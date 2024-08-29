@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import API from "utils/API";
 
 const Courses = () => {
-  const { user, notify } = useLayout();
+  const { user, notify, translate } = useLayout();
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [activeCourses, setActiveCourses] = useState([]);
@@ -34,13 +34,14 @@ const Courses = () => {
         setCourse(response?.data ?? []);
       } else {
       }
-    } catch (err) {}
+    } catch (err) { }
   };
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
+    _fetchData();
   };
   const _fetchData = () => {
     setLoading(true);
@@ -60,7 +61,42 @@ const Courses = () => {
       }
     );
   };
-
+  const _register = (data: any) => {
+    console.log(data?.is_available, "ssss");
+    if (!data?.is_available) {
+      notify({
+        type: "warning",
+        message: "This Course Is Not Availabel Now",
+        timeout: 2000,
+      });
+      return;
+    }
+    if (!data?.is_subscribed) {
+      setLoading(true);
+      const url = `/api/student_registeration/register`;
+      API.post(
+        url,
+        data,
+        (data) => {
+          setLoading(false);
+          setAllCourses(data?.data || []);
+        },
+        (e) => {
+          notify({type: "error", message: "not enough balance"})
+          setLoading(false);
+        },
+        {
+          Authorization: `Bearer ${user?.access_token}`,
+        }
+      );
+    } else {
+      notify({
+        type: "warning",
+        message: "You are already Enrolled in this course ",
+        timeout: 2000,
+      });
+    }
+  };
   useEffect(() => {
     _fetchData();
   }, []);
@@ -68,12 +104,6 @@ const Courses = () => {
   useEffect(() => {
     if (activeTab === "all") {
       _fetchData();
-    } else if (activeTab === "my-courses") {
-      if (allCourses && allCourses?.length > 0) {
-        setMyCourses(
-          allCourses.filter((course: any) => !!course?.is_available)
-        );
-      }
     } else if (activeTab === "active-courses") {
       if (allCourses && allCourses?.length > 0) {
         setActiveCourses(
@@ -91,52 +121,40 @@ const Courses = () => {
     switch (activeTab) {
       case "all":
         return allCourses;
-      case "my-courses":
-        return myCourses;
       case "active-courses":
         return activeCourses;
       default:
-        return [];
+        return allCourses;
     }
   };
-
+  const [waitDetails, setWaitDetails] = useState(null);
   const _openCourseDetails = async (id: any) => {
+    setWaitDetails(id);
     await _getCourse(id);
+    setWaitDetails(null);
     handleOpen();
   };
   return (
-    <AuthLayout title="Courses">
+    <AuthLayout title={translate("courses")}>
       <div className="mb-4 border-b border-gray-200">
         <div className="flex space-x-4">
           <button
-            className={`py-2 px-4 font-medium rounded-t-lg ${
-              activeTab === "all"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
+            className={`py-2 px-4 font-medium rounded-t-lg ${activeTab === "all"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200 text-gray-700"
+              }`}
             onClick={() => handleTabChange("all")}
           >
-            All Courses
+            {translate("all_courses")}
           </button>
           <button
-            className={`py-2 px-4 font-medium rounded-t-lg ${
-              activeTab === "my-courses"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => handleTabChange("my-courses")}
-          >
-            My Courses
-          </button>
-          <button
-            className={`py-2 px-4 font-medium rounded-t-lg ${
-              activeTab === "active-courses"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
+            className={`py-2 px-4 font-medium rounded-t-lg ${activeTab === "active-courses"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200 text-gray-700"
+              }`}
             onClick={() => handleTabChange("active-courses")}
           >
-            Active Courses
+            {translate("avialable_courses")}
           </button>
         </div>
       </div>
@@ -147,6 +165,20 @@ const Courses = () => {
         handleOpen={handleOpen}
         open={open}
         _refresh={_fetchData}
+        handleRegister={({
+          course_id,
+          section_id,
+          is_subscribed,
+          is_available,
+        }) => {
+          _register({
+            is_available,
+            is_subscribed,
+            course_id,
+            section_id,
+          });
+          handleClose();
+        }}
       />
       <div className="grid grid-cols-3 gap-6">
         {loading && (
@@ -154,13 +186,16 @@ const Courses = () => {
             <LoadingSpinner />
           </div>
         )}
-        {getCoursesToDisplay().map((course, i) => (
-          <CourseCard
-            _openCourseDetails={_openCourseDetails}
-            key={i}
-            course={course}
-          />
-        ))}
+        {getCoursesToDisplay() &&
+          getCoursesToDisplay()?.length &&
+          getCoursesToDisplay()?.map((course, i) => (
+            <CourseCard
+              _openCourseDetails={_openCourseDetails}
+              key={i}
+              course={course}
+              waitDetails={waitDetails}
+            />
+          ))}
       </div>
     </AuthLayout>
   );

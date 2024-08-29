@@ -1,4 +1,5 @@
 import { LoadingSpinner } from "components/Svgs";
+import { useLayout } from "layout";
 import CanCall from "utils/ability";
 
 export default function UsersTable({
@@ -10,8 +11,8 @@ export default function UsersTable({
   handleOpenEdit: (user: any) => void;
   handleDelete: (user: any) => void;
 }) {
-  console.log(users, " users");
-  const TABLE_HEAD = ["Member", "Email", "Birthdate", "ID", "Actions"];
+  const { translate } = useLayout()
+  const TABLE_HEAD = [translate("member"), translate("email"), translate("birthdate"), translate("id"), translate("actions")];
 
   return (
     <>
@@ -50,20 +51,20 @@ export default function UsersTable({
                     }`}
                 >
                   <td className="px-6 py-4 font-medium  text-gray-900 whitespace-nowrap dark:text-white flex items-center space-x-2">
-                    {user.personal_picture && (
+                    {user?.personal_picture && (
                       <img
-                        src={`${import.meta.env.VITE_BASE_URL}${user.personal_picture
+                        src={`${import.meta.env.VITE_BASE_URL}${user?.personal_picture
                           }`}
-                        alt={user.name}
+                        alt={user?.name}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                     )}
-                    <span>{user.name}</span>
+                    <span>{user?.name}</span>
                   </td>
-                  <td className="px-6 py-4 text-start">{user.email}</td>
-                  <td className="px-6 py-4 text-start">{user.birth_date}</td>
+                  <td className="px-6 py-4 text-start">{user?.email}</td>
+                  <td className="px-6 py-4 text-start">{user?.birth_date}</td>
                   <td className="px-6 py-4  text-start">
-                    {user.national_number}
+                    {user?.national_number}
                   </td>
                   <td className="text-left flex items-center justify-center gap-2 px-6 py-4 ">
                     <CanCall permission="UPDATE_STUDENT">
@@ -72,7 +73,7 @@ export default function UsersTable({
                         href="#"
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                       >
-                        Edit
+                        {translate("edit")}
                       </a>
                     </CanCall>
                     <CanCall permission="DELETE_STUDENT">
@@ -81,7 +82,7 @@ export default function UsersTable({
                         href="#"
                         className="font-medium text-red-600 dark:text-red-500 hover:underline"
                       >
-                        Delete
+                        {translate("delete")}
                       </a>
                     </CanCall>
                   </td>

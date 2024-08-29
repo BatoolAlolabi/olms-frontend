@@ -38,7 +38,7 @@ const Employees = () => {
     setOpenDelete(!openDelete);
   };
   const [users, setUsers] = useState([]);
-  const { user, notify } = useLayout();
+  const { user, translate } = useLayout();
 
   const _fetchData = () => {
     API.get(
@@ -61,15 +61,15 @@ const Employees = () => {
   }, [open]);
 
   return (
-    <AuthLayout title={"Employees"}>
+    <AuthLayout title={translate("employees")}>
       <CanCall permission="CREATE_EMPLOYEE">
-        <div className="w-full flex justify-end m-4 items-end">
+        <div className="w-full flex justify-end mt-[10px] mb-[10px] items-end">
           <Button
             variant="text"
             className="border bg-[#fafafa] shadow-lg"
             onClick={handleOpenAdd}
           >
-            Add New Employee
+            {translate("add_new_employee")}
           </Button>
         </div>
       </CanCall>
